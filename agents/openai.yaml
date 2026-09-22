@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI summary přednášek"
+  short_description: "Vytvoří studijní shrnutí přednášky a PDF"
+  default_prompt: "Použij $ai-summary-prednasek pro zpracování této nahrávky přednášky."
