@@ -16,7 +16,7 @@ Skill:
 
 - Codex s podporou skills.
 - Nainstalovaný skill [uwebasr-client](https://github.com/honzas83/uwebasr-skill).
-- Přístup k PDF skillu v Codexu a lokální nástroje pro převod a kontrolu PDF, typicky Pandoc, LaTeX a Poppler.
+- Runtime Codexu s Pythonem, ReportLabem a pypdf pro převod; PDF skill a Poppler pro vizuální kontrolu. Pandoc, TeX ani systémové fonty nejsou potřeba.
 - Připojení k internetu během rozpoznávání řeči službou UWebASR.
 
 ## Instalace do Codexu
@@ -82,3 +82,23 @@ Markdown obsahuje právě tři části:
 3. `Důležité pojmy`
 
 Ostatní přednášky v projektu slouží pouze ke kontrole terminologie a opravě zjevných chyb přepisu. Do shrnutí se nesmí dostat obsah, který není doložen aktuální nahrávkou nebo aktuálními slajdy.
+
+## Jednotná sazba bez dalších instalací
+
+Všechny přednášky používají jediný renderer `scripts/render_summary.py`, společný styl `assets/pdf-style.json` a přibalené fonty DejaVu Sans. PDF má A4, okraje 22 mm, černý text, základní písmo 11 bodů a čísla stran, bez titulní strany a obsahu. Licence fontů je v `assets/fonts/LICENSE.txt`.
+
+Použijte Python poskytovaný nástrojem Codex `load_workspace_dependencies`:
+
+```text
+<RUNTIME_PYTHON> <SKILL_DIR>/scripts/render_summary.py prednaska.summary.md nove-summary.pdf
+```
+
+Skript odmítne existující cílový soubor. Pro povolenou náhradu nejprve vytvořte a vizuálně ověřte nové PDF pod dočasným názvem. Při chybě převodu nevzniká alternativně stylovaný dokument.
+
+Markdown má omezený formát: tři předepsané nadpisy, číslované seznamy či odrážky a pouze úvodní tučný název položky. Každá položka je jeden řádek, další formátování, tabulky, kód, matematická sazba a Markdown odkazy nejsou povolené. Přesná pravidla uvádí [specifikace výstupu](references/specifikace-vystupu.md).
+
+Renderer lze ověřit pomocí standardního unittest ze stejného runtime:
+
+```text
+<RUNTIME_PYTHON> -m unittest discover -s tests -v
+```

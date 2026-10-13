@@ -7,7 +7,7 @@ description: Zpracuje nahrávku přednášky spolu s odpovídajícími slajdy v 
 
 Vstupem je cesta k jednomu souboru s nahrávkou. Výstupem jsou vedle něj dva soubory se stejným základem názvu: `<název>.summary.md` a `<název>.summary.pdf`. Přepis je pouze dočasný pracovní podklad.
 
-Před zpracováním přečti [specifikaci výstupu](references/specifikace-vystupu.md). Pro rozpoznání řeči načti a dodržuj skill `$uwebasr-client`; API ani klienta neimplementuj znovu. Pro vytvoření a vizuální kontrolu PDF načti a dodržuj skill `$pdf`.
+Před zpracováním přečti [specifikaci výstupu](references/specifikace-vystupu.md). Pro rozpoznání řeči načti a dodržuj skill `$uwebasr-client`; API ani klienta neimplementuj znovu. Pro kontrolu PDF načti skill `$pdf`; samotnou sazbu vždy provádí přibalený renderer popsaný níže.
 
 ## Vstupy a ochrana existujících souborů
 
@@ -37,6 +37,22 @@ Rozlišuj zdroje:
 - slovníček zahrnuje důležité pojmy z aktuálních slajdů i přepisu.
 
 Neuváděj domněnky jako fakta. Nejasný název raději ověř v aktuálních slajdech nebo v kontextových materiálech; pokud jej nelze spolehlivě určit, formulaci zobecni nebo vynech.
+
+## Jednotný Markdown a PDF
+
+Markdown používá pouze tři předepsané nadpisy `#`, jednoúrovňové číslované seznamy, odrážky `-` a tučný název na začátku položky. Každá položka je jeden zdrojový řádek ve tvaru `1. **Název** - Text` nebo `- **Pojem** - Definice`. Mezi položkami vlož prázdný řádek. Číslování začíná v každé sekci od 1. Podrobnosti a výjimku pro přednášku bez doplnění uvádí [specifikace výstupu](references/specifikace-vystupu.md).
+
+Nepoužívej tabulky, vnořené seznamy, další nadpisy, kurzívu, další tučné úseky, kódové bloky ani inline kód, matematickou sazbu, obrázky, HTML, LaTeX, frontmatter či Markdown odkazy. Příkazy a vzorce vysvětli prostým textem; důležitou adresu napiš jako prostou URL. Neměň obsah kvůli sazbě.
+
+PDF vždy vytvoř skriptem [scripts/render_summary.py](scripts/render_summary.py). Použij Python z aktuálního runtime zjištěný nástrojem `load_workspace_dependencies`; nevkládej do instrukcí ani příkazů cestu k jedné konkrétní verzi runtime. Skript potřebuje pouze přibalené knihovny ReportLab a pypdf. Fonty jsou součástí skillu.
+
+```text
+<RUNTIME_PYTHON> <SKILL_DIR>/scripts/render_summary.py <HOTOVÝ_MARKDOWN> <NOVÉ_DOČASNÉ_PDF>
+```
+
+Pevný vzhled definuje [assets/pdf-style.json](assets/pdf-style.json): A4, okraje 22 mm, DejaVu Sans 11 bodů, černý text, jednotné nadpisy a číslování stran. PDF nemá titulní stranu ani obsah. Styl ani fonty pro jednotlivou přednášku neměň. Nevytvářej vlastní renderer, nepoužívej Pandoc/TeX ani náhradní styl. Při chybě oprav Markdown či příčinu převodu; pokud potřebný runtime není dostupný, zachovej Markdown a oznám konkrétní překážku bez instalování jiného převodníku.
+
+Renderer odmítá nepodporovaný Markdown a existující cílový soubor, ověřuje čitelnost a úplnost textu PDF. Neověřuje věcnou správnost, chronologii ani české abecední řazení; ty zkontroluj při syntéze. Předání stále vyžaduje vizuální render všech stran podle `$pdf`.
 
 ## Výstupy a ověření
 

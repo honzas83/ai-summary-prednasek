@@ -1,0 +1,17 @@
+{
+  "page": "A4",
+  "margin_mm": 22,
+  "font_regular": "fonts/DejaVuSans.ttf",
+  "font_bold": "fonts/DejaVuSans-Bold.ttf",
+  "body_size_pt": 11,
+  "body_leading_pt": 15,
+  "paragraph_space_after_pt": 8,
+  "heading_size_pt": 16,
+  "heading_leading_pt": 21,
+  "heading_space_before_pt": 15,
+  "heading_space_after_pt": 10,
+  "list_indent_pt": 23,
+  "text_color": "#000000",
+  "footer_size_pt": 9,
+  "footer_y_mm": 12
+}

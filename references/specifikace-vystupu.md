@@ -8,6 +8,7 @@ Výstup je čistý český Markdown v UTF-8 bez YAML frontmatteru, titulní stra
 # Shrnutí hlavních bodů
 
 1. **Název tématu** - Souvislé a věcně úplné vysvětlení tématu pro studenty.
+
 2. **Další téma** - Vysvětlení v pořadí, v jakém zaznělo na přednášce.
 ```
 
@@ -37,6 +38,7 @@ Výstup je čistý český Markdown v UTF-8 bez YAML frontmatteru, titulní stra
 # Důležité pojmy
 
 - **API (Application Programming Interface)** - Stručná definice pojmu v kontextu přednášky.
+
 - **Další pojem** - Srozumitelná a samostatně použitelná definice.
 ```
 
@@ -54,6 +56,17 @@ Výstup je čistý český Markdown v UTF-8 bez YAML frontmatteru, titulní stra
 - Nepřidávej citace, zdrojové značky, časové kódy ani odkazy, pokud nejsou samy důležitou součástí probíraného obsahu.
 - Nepřidávej žádný text mimo tři sekce.
 
+## Povolené prvky Markdownu
+
+- Pouze tři nadpisy první úrovně uvedené výše, v předepsaném pořadí.
+- První dvě sekce používají jednoúrovňové číslované seznamy od 1, třetí odrážky `-`.
+- Každá položka zabírá jeden zdrojový řádek a má přesný tvar `1. **Název** - Text` nebo `- **Pojem** - Definice`. Vysvětlení je prostý text, bez dalšího formátování.
+- Mezi položkami a za nadpisy je prázdný řádek. Výjimkou je předepsaná prostá věta pro sekci bez doplnění.
+- Nepoužívej další nadpisy, tabulky, vnořené seznamy, kurzívu, další tučné úseky, inline kód, kódové bloky, obrázky, HTML, LaTeX, matematickou sazbu, frontmatter ani Markdown odkazy. Důležité URL mohou být prostým textem.
+- Rezervované znaky pro nepovolené formátování (`*`, `_`, zpětný apostrof, `$`, `<`, `>`, `|` a zpětné lomítko) nepiš do názvů ani vysvětlení. Hvězdičky jsou povolené pouze ve vyznačení úvodního tučného názvu. Například příkaz iptables -L piš prostě a nerovnost vyjádři slovně.
+
 ## PDF
 
-PDF vytvoř přímo z hotového Markdownu v čistém A4 rozvržení vhodném pro studium a tisk. Zachovej hierarchii nadpisů, číslování, odrážky a tučné názvy. Použij font s úplnou podporou češtiny, přiměřené okraje a číslování stran. Výsledný dokument vizuálně zkontroluj podle pravidel skillu `$pdf`.
+PDF vzniká výhradně skriptem `scripts/render_summary.py` z hotového Markdownu. Pevnou sazbu určuje `assets/pdf-style.json` a přibalené fonty DejaVu Sans: A4, okraje 22 mm, základní písmo 11 bodů, řádkování 15 bodů, černý text a číslování stran. Zachovej všechny tři sekce, seznamy a tučné názvy, bez titulní strany a obsahu. Nepřidávej vlastní styl ani náhradní převodník.
+
+Skript ověřuje formát vstupu, čitelnost PDF a přítomnost textu ve správném pořadí. Úplnost obsahu a vzhled všech stran dále ověř podle skillu `$pdf`. Změny společného vzhledu patří do skillu, ne do jednotlivého běhu.
