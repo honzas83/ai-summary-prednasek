@@ -5,16 +5,16 @@ description: Zpracuje nahrávku přednášky spolu s odpovídajícími slajdy v 
 
 # AI summary přednášek
 
-Vstupem je cesta k jednomu souboru s nahrávkou. Výstupem jsou vedle něj dva soubory se stejným základem názvu: `<název>.summary.md` a `<název>.summary.pdf`. Přepis je pouze dočasný pracovní podklad.
+Vstupem je cesta k jednomu souboru s nahrávkou a případně cesta k prezentaci nebo její složce. Výstupem jsou dva soubory vedle potvrzeného PDF prezentace, se základem názvu podle tohoto PDF: `<název-prezentace>.summary.md` a `<název-prezentace>.summary.pdf`. Nahrávka může být v jiné složce nebo mít dočasný název; její umístění ani název neurčují cílové výstupy. Přepis je pouze dočasný pracovní podklad.
 
 Před zpracováním přečti [specifikaci výstupu](references/specifikace-vystupu.md). Pro rozpoznání řeči načti a dodržuj skill `$uwebasr-client`; API ani klienta neimplementuj znovu. Pro kontrolu PDF načti skill `$pdf`; samotnou sazbu vždy provádí přibalený renderer popsaný níže.
 
 ## Vstupy a ochrana existujících souborů
 
 1. Ověř, že zadaná nahrávka existuje a je soubor.
-2. Ve stejné složce nejprve hledej PDF se shodným základem názvu bez ohledu na velikost písmen, například `ite01.mp3` a `ite01.pdf`. Nikdy jako slajdy nevybírej `*.summary.pdf`.
+2. Pokud uživatel určil PDF prezentace nebo složku se slajdy, použij tento vstup. Jinak nejprve hledej vedle nahrávky PDF se shodným základem názvu bez ohledu na velikost písmen, například `ite01.mp3` a `ite01.pdf`. Nikdy jako slajdy nevybírej `*.summary.pdf`.
 3. Nalezené slajdy vždy oznam uživateli před spuštěním přepisu. Pokud neexistuje právě jedna jednoznačná shoda, nabídni uživateli nalezené PDF jako varianty a vyžádej si výběr; bez potvrzených slajdů nepokračuj.
-4. Před drahým zpracováním zkontroluj oba cílové výstupy. Pokud alespoň jeden existuje, sděl přesné cesty a vyžádej si souhlas s přepsáním. Bez výslovného souhlasu nic nepřepisuj.
+4. Z cesty potvrzeného PDF odvoď oba cílové výstupy v jeho složce, například `2026/04/bsoi04.pdf` určuje `2026/04/bsoi04.summary.md` a `2026/04/bsoi04.summary.pdf`. Před drahým zpracováním je oba zkontroluj. Pokud alespoň jeden existuje, sděl přesné cesty a vyžádej si souhlas s přepsáním. Bez výslovného souhlasu nic nepřepisuj.
 5. Při povoleném přepsání připrav nové výstupy pod dočasnými názvy a nahraď původní soubory až po úspěšném ověření nové dvojice. Neodstraňuj staré výstupy předem.
 
 ## Přepis
@@ -65,7 +65,7 @@ Před předáním ověř:
 - abecední řazení slovníčku bez zjevných duplicit;
 - že část „Co nenajdete v prezentaci“ neparafrázuje body, které už slajdy obsahují;
 - že se do výsledku nedostal obsah pouze z jiné přednášky;
-- shodu cílových názvů a existenci obou souborů;
+- shodu cílových názvů se základem názvu potvrzeného PDF a existenci obou souborů vedle něj;
 - úspěšné otevření PDF, úplnost textu a vizuální render všech stran bez přetečení, ořezání, rozbitých znaků nebo prázdných stran.
 
 Na závěr stručně uveď použité slajdy, potvrď odstranění dočasného přepisu a přidej dva klikatelné Markdown odkazy s absolutními cestami: jeden na hotový `.summary.md` a druhý na hotový `.summary.pdf`.

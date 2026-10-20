@@ -4,11 +4,11 @@ Codex skill pro automatické zpracování nahrané přednášky a odpovídajíc�
 
 Skill:
 
-- vyhledá slajdy se stejným názvem jako nahrávka;
+- použije zadanou prezentaci nebo vyhledá slajdy se stejným názvem jako nahrávka;
 - upozorní na nalezenou dvojici a při nejednoznačnosti nabídne výběr;
 - vytvoří český přepis pomocí [UWebASR](https://github.com/honzas83/uwebasr-skill);
 - připraví chronologické shrnutí, témata mimo prezentaci a abecední slovníček;
-- vytvoří `<název>.summary.md` a `<název>.summary.pdf` vedle nahrávky;
+- vytvoří `<název-prezentace>.summary.md` a `<název-prezentace>.summary.pdf` vedle PDF prezentace;
 - nepřepíše existující výstupy bez potvrzení;
 - po úspěšném zpracování odstraní dočasný přepis.
 
@@ -45,17 +45,17 @@ Codex změny obvykle rozpozná automaticky. Pokud se skill v nabídce neobjeví,
 
 ## Příklad použití
 
-Nahrávka a slajdy jsou uložené vedle sebe se stejným základem názvu:
+Nahrávka může být uložená dočasně v jiné složce než slajdy:
 
 ```text
-2026/01/ite01.mp3
+~/tmp/nahravka.mp3
 2026/01/ite01.pdf
 ```
 
 V Codexu zadejte:
 
 ```text
-Použij $ai-summary-prednasek na 2026/01/ite01.mp3.
+Použij $ai-summary-prednasek na ~/tmp/nahravka.mp3 a slajdy 2026/01/ite01.pdf.
 ```
 
 Po dokončení vzniknou:
@@ -65,7 +65,7 @@ Po dokončení vzniknou:
 2026/01/ite01.summary.pdf
 ```
 
-Skill na konci odpovědi přidá klikatelné odkazy na oba výsledné soubory.
+Výstupní složka a základ názvů se vždy odvozují od potvrzeného PDF prezentace, nikoli od nahrávky. Skill na konci odpovědi přidá klikatelné odkazy na oba výsledné soubory.
 
 Výchozím jazykem je čeština a používá se model `lindat/generic/cs/zipformer`. Jiný jazyk lze zadat přímo v požadavku:
 
