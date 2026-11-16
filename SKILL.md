@@ -1,11 +1,11 @@
 ---
 name: ai-summary-prednasek
-description: Zpracuje nahrávku přednášky spolu s odpovídajícími slajdy v PDF do českého studijního shrnutí v Markdownu a PDF. Použij, když uživatel zadá soubor s nahrávkou a chce automatický přepis, shrnutí výkladu, témata mimo slajdy a slovníček pojmů.
+description: Zpracuje nahrávku přednášky spolu s odpovídajícími slajdy v PDF do českého studijního shrnutí v Markdownu a PDF, na výslovné vyžádání také v DOCX. Použij, když uživatel zadá soubor s nahrávkou a chce automatický přepis, shrnutí výkladu, témata mimo slajdy a slovníček pojmů.
 ---
 
 # AI summary přednášek
 
-Vstupem je cesta k jednomu souboru s nahrávkou a případně cesta k prezentaci nebo její složce. Výstupem jsou dva soubory vedle potvrzeného PDF prezentace, se základem názvu podle tohoto PDF: `<název-prezentace>.summary.md` a `<název-prezentace>.summary.pdf`. Nahrávka může být v jiné složce nebo mít dočasný název; její umístění ani název neurčují cílové výstupy. Přepis je pouze dočasný pracovní podklad.
+Vstupem je cesta k jednomu souboru s nahrávkou a případně cesta k prezentaci nebo její složce. Výstupem jsou dva soubory vedle potvrzeného PDF prezentace, se základem názvu podle tohoto PDF: `<název-prezentace>.summary.md` a `<název-prezentace>.summary.pdf`. Jen na výslovné vyžádání přidej také `<název-prezentace>.summary.docx` ve stejné složce. Nahrávka může být v jiné složce nebo mít dočasný název; její umístění ani název neurčují cílové výstupy. Přepis je pouze dočasný pracovní podklad.
 
 Před zpracováním přečti [specifikaci výstupu](references/specifikace-vystupu.md). Pro rozpoznání řeči načti a dodržuj skill `$uwebasr-client`; API ani klienta neimplementuj znovu. Pro kontrolu PDF načti skill `$pdf`; samotnou sazbu vždy provádí přibalený renderer popsaný níže.
 
@@ -14,8 +14,8 @@ Před zpracováním přečti [specifikaci výstupu](references/specifikace-vystu
 1. Ověř, že zadaná nahrávka existuje a je soubor.
 2. Pokud uživatel určil PDF prezentace nebo složku se slajdy, použij tento vstup. Jinak nejprve hledej vedle nahrávky PDF se shodným základem názvu bez ohledu na velikost písmen, například `ite01.mp3` a `ite01.pdf`. Nikdy jako slajdy nevybírej `*.summary.pdf`.
 3. Nalezené slajdy vždy oznam uživateli před spuštěním přepisu. Pokud neexistuje právě jedna jednoznačná shoda, nabídni uživateli nalezené PDF jako varianty a vyžádej si výběr; bez potvrzených slajdů nepokračuj.
-4. Z cesty potvrzeného PDF odvoď oba cílové výstupy v jeho složce, například `2026/04/bsoi04.pdf` určuje `2026/04/bsoi04.summary.md` a `2026/04/bsoi04.summary.pdf`. Před drahým zpracováním je oba zkontroluj. Pokud alespoň jeden existuje, sděl přesné cesty a vyžádej si souhlas s přepsáním. Bez výslovného souhlasu nic nepřepisuj.
-5. Při povoleném přepsání připrav nové výstupy pod dočasnými názvy a nahraď původní soubory až po úspěšném ověření nové dvojice. Neodstraňuj staré výstupy předem.
+4. Z cesty potvrzeného PDF odvoď oba cílové výstupy v jeho složce, například `2026/04/bsoi04.pdf` určuje `2026/04/bsoi04.summary.md` a `2026/04/bsoi04.summary.pdf`. Pokud je vyžádán DOCX, odvoď i jeho cílovou cestu. Před drahým zpracováním zkontroluj všechny plánované výstupy. Pokud alespoň jeden existuje, sděl přesné cesty a vyžádej si souhlas s přepsáním. Bez výslovného souhlasu nic nepřepisuj.
+5. Při povoleném přepsání připrav nové výstupy pod dočasnými názvy a nahraď původní soubory až po úspěšném ověření všech nových požadovaných výstupů. Neodstraňuj staré výstupy předem.
 
 ## Přepis
 
@@ -40,7 +40,7 @@ Neuváděj domněnky jako fakta. Nejasný název raději ověř v aktuálních s
 
 ## Jednotný Markdown a PDF
 
-Markdown používá pouze tři předepsané nadpisy `#`, jednoúrovňové číslované seznamy, odrážky `-` a tučný název na začátku položky. Každá položka je jeden zdrojový řádek ve tvaru `1. **Název** - Text` nebo `- **Pojem** - Definice`. Mezi položkami vlož prázdný řádek. Číslování začíná v každé sekci od 1. Podrobnosti a výjimku pro přednášku bez doplnění uvádí [specifikace výstupu](references/specifikace-vystupu.md).
+Markdown používá pouze tři předepsané nadpisy `#`, jednoúrovňové číslované seznamy, odrážky `-` a tučný název na začátku položky. Každá položka je jeden zdrojový řádek ve tvaru `1. **Název** - Text` nebo `- **Pojem** - Definice`. Mezi položkami vlož prázdný řádek. Číslování začíná v každé sekci od 1. Hned pod první nadpis vlož předepsané upozornění na AI jako samostatný prostý odstavec, oddělený prázdnými řádky. Jeho přesné znění a výjimku pro přednášku bez doplnění uvádí [specifikace výstupu](references/specifikace-vystupu.md).
 
 Nepoužívej tabulky, vnořené seznamy, další nadpisy, kurzívu, další tučné úseky, kódové bloky ani inline kód, matematickou sazbu, obrázky, HTML, LaTeX, frontmatter či Markdown odkazy. Příkazy a vzorce vysvětli prostým textem; důležitou adresu napiš jako prostou URL. Neměň obsah kvůli sazbě.
 
@@ -54,18 +54,25 @@ Pevný vzhled definuje [assets/pdf-style.json](assets/pdf-style.json): A4, okraj
 
 Renderer odmítá nepodporovaný Markdown a existující cílový soubor, ověřuje čitelnost a úplnost textu PDF. Neověřuje věcnou správnost, chronologii ani české abecední řazení; ty zkontroluj při syntéze. Předání stále vyžaduje vizuální render všech stran podle `$pdf`.
 
+## Volitelný DOCX
+
+DOCX vytvářej pouze na výslovné vyžádání uživatele, navíc k Markdownu a PDF. Načti skill `$documents` a dodrž jeho postup vytvoření a vizuálního ověření DOCX. Z hotového Markdownu převezmi obsah přes `parse_summary` z přibaleného `scripts/render_summary.py`; parser ani syntézu neopakuj. Pomocí `python-docx` z aktuálního runtime převeď bloky na skutečné nadpisy první úrovně, prosté odstavce a seznamy s tučným názvem položky. Číslování obou číslovaných seznamů musí začínat od 1. Upozornění musí zůstat hned za prvním nadpisem.
+
+Zachovej tři sekce, pořadí a celý text beze změn; nepřidávej titulní stranu, úvod ani obsah. Základní vzhled převezmi z `assets/pdf-style.json` (A4, okraje, písmo, velikosti a černý text); zalomení stran se může od PDF lišit. Ulož nejprve do nového dočasného `.docx`, znovu jej otevři a porovnej text i pořadí všech bloků s Markdownem. Před předáním vykresli DOCX podle `$documents` a vizuálně zkontroluj všechny strany. Výsledkem je `<název-prezentace>.summary.docx` vedle potvrzeného PDF slajdů. Pokud vytvoření nebo kontrola DOCX selže, zachovej ověřený Markdown a PDF a oznam konkrétní překážku; DOCX nevydávej za hotový.
+
 ## Výstupy a ověření
 
-Vytvoř jediný Markdown přesně podle specifikace a z něj odvoď PDF. PDF nesmí obsahově rozšiřovat ani zkracovat Markdown.
+Vytvoř jediný Markdown přesně podle specifikace a z něj odvoď PDF. PDF ani případný DOCX nesmí obsahově rozšiřovat ani zkracovat Markdown.
 
 Před předáním ověř:
 
 - přesné názvy, pořadí a jediný výskyt všech tří sekcí;
+- předepsané upozornění hned za prvním nadpisem ve všech požadovaných formátech;
 - chronologické řazení prvních dvou číslovaných seznamů;
 - abecední řazení slovníčku bez zjevných duplicit;
 - že část „Co nenajdete v prezentaci“ neparafrázuje body, které už slajdy obsahují;
 - že se do výsledku nedostal obsah pouze z jiné přednášky;
-- shodu cílových názvů se základem názvu potvrzeného PDF a existenci obou souborů vedle něj;
+- shodu cílových názvů se základem názvu potvrzeného PDF a existenci všech požadovaných souborů vedle něj;
 - úspěšné otevření PDF, úplnost textu a vizuální render všech stran bez přetečení, ořezání, rozbitých znaků nebo prázdných stran.
 
-Na závěr stručně uveď použité slajdy, potvrď odstranění dočasného přepisu a přidej dva klikatelné Markdown odkazy s absolutními cestami: jeden na hotový `.summary.md` a druhý na hotový `.summary.pdf`.
+Na závěr stručně uveď použité slajdy, potvrď odstranění dočasného přepisu a přidej dva klikatelné Markdown odkazy s absolutními cestami: jeden na hotový `.summary.md` a druhý na hotový `.summary.pdf`. Pokud byl vyžádán a ověřen DOCX, přidej také odkaz na `.summary.docx`.

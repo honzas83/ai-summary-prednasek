@@ -1,6 +1,6 @@
 # AI summary přednášek
 
-Codex skill pro automatické zpracování nahrané přednášky a odpovídajících slajdů do studijního shrnutí v Markdownu a PDF.
+Codex skill pro automatické zpracování nahrané přednášky a odpovídajících slajdů do studijního shrnutí v Markdownu a PDF, na výslovné vyžádání také v DOCX.
 
 Skill:
 
@@ -80,6 +80,8 @@ Markdown obsahuje právě tři části:
 1. `Shrnutí hlavních bodů`
 2. `Co nenajdete v prezentaci`
 3. `Důležité pojmy`
+
+Hned za prvním nadpisem je upozornění na použití AI, možné chyby a potřebu doprovodných slajdů. Na výslovné vyžádání vzniká navíc `<název-prezentace>.summary.docx` se stejným obsahem; jeho vytvoření a vizuální ověření zajišťuje skill `$documents`.
 
 Ostatní přednášky v projektu slouží pouze ke kontrole terminologie a opravě zjevných chyb přepisu. Do shrnutí se nesmí dostat obsah, který není doložen aktuální nahrávkou nebo aktuálními slajdy.
 

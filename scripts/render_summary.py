@@ -9,6 +9,7 @@ import tempfile
 import unicodedata
 
 HEADINGS = ('Shrnutí hlavních bodů', 'Co nenajdete v prezentaci', 'Důležité pojmy')
+AI_NOTICE = 'Upozornění: Toto shrnutí bylo vytvořeno s podporou umělé inteligence na základě slajdů a výkladu vyučujícího. Může obsahovat chyby nebo nepřesnosti. Bez doprovodných slajdů mohou být některé části nejasné nebo zavádějící.'
 EMPTY_EXTRA = 'V přednášce nezazněla žádná významná témata nad rámec prezentace.'
 ASSETS = Path(__file__).resolve().parent.parent / 'assets'
 
@@ -30,6 +31,9 @@ def parse_summary(text):
             continue
         if section < 0:
             raise ValueError('Dokument musí začínat prvním předepsaným nadpisem.')
+        if section == 0 and len(blocks) == 1 and line == AI_NOTICE:
+            blocks.append(('plain', '', line, ''))
+            continue
         if section == 1 and line == EMPTY_EXTRA:
             if count:
                 raise ValueError('Větu o chybějících doplněních nelze kombinovat se seznamem.')
