@@ -81,7 +81,7 @@ Markdown obsahuje právě tři části:
 2. `Co nenajdete v prezentaci`
 3. `Důležité pojmy`
 
-Hned za prvním nadpisem je upozornění na použití AI, možné chyby a potřebu doprovodných slajdů. Na výslovné vyžádání vzniká navíc `<název-prezentace>.summary.docx` se stejným obsahem; jeho vytvoření a vizuální ověření zajišťuje skill `$documents`.
+Hned za prvním nadpisem je kurzívou upozornění na použití AI, možné chyby a potřebu doprovodných slajdů. Na výslovné vyžádání vzniká navíc `<název-prezentace>.summary.docx` se stejným obsahem; jeho vytvoření a vizuální ověření zajišťuje skill `$documents`.
 
 Ostatní přednášky v projektu slouží pouze ke kontrole terminologie a opravě zjevných chyb přepisu. Do shrnutí se nesmí dostat obsah, který není doložen aktuální nahrávkou nebo aktuálními slajdy.
 
@@ -97,7 +97,7 @@ Použijte Python poskytovaný nástrojem Codex `load_workspace_dependencies`:
 
 Skript odmítne existující cílový soubor. Pro povolenou náhradu nejprve vytvořte a vizuálně ověřte nové PDF pod dočasným názvem. Při chybě převodu nevzniká alternativně stylovaný dokument.
 
-Markdown má omezený formát: tři předepsané nadpisy, číslované seznamy či odrážky a pouze úvodní tučný název položky. Každá položka je jeden řádek, další formátování, tabulky, kód, matematická sazba a Markdown odkazy nejsou povolené. Přesná pravidla uvádí [specifikace výstupu](references/specifikace-vystupu.md).
+Markdown má omezený formát: tři předepsané nadpisy, číslované seznamy či odrážky a pouze úvodní tučný název položky a kurzívu předepsaného upozornění. Každá položka je jeden řádek, další formátování, tabulky, kód, matematická sazba a Markdown odkazy nejsou povolené. Přesná pravidla uvádí [specifikace výstupu](references/specifikace-vystupu.md).
 
 Renderer lze ověřit pomocí standardního unittest ze stejného runtime:
 

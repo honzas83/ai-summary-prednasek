@@ -13,5 +13,6 @@
   "list_indent_pt": 23,
   "text_color": "#000000",
   "footer_size_pt": 9,
-  "footer_y_mm": 12
+  "footer_y_mm": 12,
+  "font_italic": "fonts/DejaVuSans-Oblique.ttf"
 }

@@ -9,7 +9,8 @@ import tempfile
 import unicodedata
 
 HEADINGS = ('Shrnutí hlavních bodů', 'Co nenajdete v prezentaci', 'Důležité pojmy')
-AI_NOTICE = 'Upozornění: Toto shrnutí bylo vytvořeno s podporou umělé inteligence na základě slajdů a výkladu vyučujícího. Může obsahovat chyby nebo nepřesnosti. Bez doprovodných slajdů mohou být některé části nejasné nebo zavádějící.'
+AI_NOTICE = 'Upozornění: Tento dokument byl vytvořen s podporou umělé inteligence na základě slajdů a výkladu vyučujícího. Může obsahovat chyby nebo nepřesnosti. Bez doprovodných slajdů mohou být některé části nejasné nebo zavádějící.'
+LEGACY_AI_NOTICE = AI_NOTICE.replace('Tento dokument byl vytvořen', 'Toto shrnutí bylo vytvořeno')
 EMPTY_EXTRA = 'V přednášce nezazněla žádná významná témata nad rámec prezentace.'
 ASSETS = Path(__file__).resolve().parent.parent / 'assets'
 
@@ -31,8 +32,8 @@ def parse_summary(text):
             continue
         if section < 0:
             raise ValueError('Dokument musí začínat prvním předepsaným nadpisem.')
-        if section == 0 and len(blocks) == 1 and line == AI_NOTICE:
-            blocks.append(('plain', '', line, ''))
+        if section == 0 and len(blocks) == 1 and line in (AI_NOTICE, LEGACY_AI_NOTICE, f'*{AI_NOTICE}*'):
+            blocks.append(('notice' if line.startswith('*') else 'plain', '', line.strip('*'), ''))
             continue
         if section == 1 and line == EMPTY_EXTRA:
             if count:
@@ -102,11 +103,12 @@ def render(blocks, output):
     style = json.loads((ASSETS / 'pdf-style.json').read_text(encoding='utf-8'))
     if style['page'] != 'A4':
         raise ValueError('Nepodporovaný formát stránky.')
-    for face, key in [('Summary', 'font_regular'), ('Summary-Bold', 'font_bold')]:
+    for face, key in [('Summary', 'font_regular'), ('Summary-Bold', 'font_bold'), ('Summary-Italic', 'font_italic')]:
         pdfmetrics.registerFont(TTFont(face, str(ASSETS / style[key])))
-    pdfmetrics.registerFontFamily('Summary', normal='Summary', bold='Summary-Bold')
+    pdfmetrics.registerFontFamily('Summary', normal='Summary', bold='Summary-Bold', italic='Summary-Italic')
     for kind, label, title, explanation in blocks:
-        for face, value in [('Summary-Bold' if kind != 'plain' else 'Summary', title), ('Summary', explanation)]:
+        title_face = {'heading': 'Summary-Bold', 'item': 'Summary-Bold', 'plain': 'Summary', 'notice': 'Summary-Italic'}[kind]
+        for face, value in [(title_face, title), ('Summary', explanation)]:
             chars = pdfmetrics.getFont(face).face.charToGlyph
             missing = [c for c in value if ord(c) not in chars]
             if missing:
@@ -117,6 +119,7 @@ def render(blocks, output):
                           leftIndent=style['list_indent_pt'], bulletFontName='Summary',
                           bulletFontSize=style['body_size_pt'], allowWidows=0, allowOrphans=0)
     plain = ParagraphStyle('plain', parent=body, leftIndent=0)
+    notice = ParagraphStyle('notice', parent=plain, fontName='Summary-Italic')
     heading = ParagraphStyle('heading', fontName='Summary-Bold', fontSize=style['heading_size_pt'],
                              leading=style['heading_leading_pt'], spaceBefore=style['heading_space_before_pt'],
                              spaceAfter=style['heading_space_after_pt'], keepWithNext=True,
@@ -125,8 +128,8 @@ def render(blocks, output):
     for kind, label, title, explanation in blocks:
         if kind == 'heading':
             story.append(Paragraph(html.escape(title), heading))
-        elif kind == 'plain':
-            story.append(Paragraph(html.escape(title), plain))
+        elif kind in ('plain', 'notice'):
+            story.append(Paragraph(html.escape(title), notice if kind == 'notice' else plain))
         else:
             content = '<b>' + html.escape(title) + '</b> - ' + html.escape(explanation)
             story.append(KeepTogether([Paragraph(content, body, bulletText=label)]))

@@ -14,25 +14,45 @@ spec.loader.exec_module(renderer)
 
 def summary(prose='Příliš žluťoučký kůň úpěl ďábelské ódy. A & B.', extra=None, notice=True):
     extra = renderer.EMPTY_EXTRA if extra is None else extra
-    opening = renderer.AI_NOTICE + '\n\n' if notice else ''
+    opening = f'*{renderer.AI_NOTICE}*\n\n' if notice else ''
     return f'# {renderer.HEADINGS[0]}\n\n{opening}1. **Síť** - {prose}\n\n# {renderer.HEADINGS[1]}\n\n{extra}\n\n# {renderer.HEADINGS[2]}\n\n- **Pojem** - Česká definice.\n'
 
 
 class RendererTests(unittest.TestCase):
-    def test_notice_is_plain_and_does_not_change_numbering(self):
+    def test_notice_is_italic_and_does_not_change_numbering(self):
         blocks = renderer.parse_summary(summary())
-        self.assertEqual(blocks[1], ('plain', '', renderer.AI_NOTICE, ''))
+        self.assertEqual(blocks[1], ('notice', '', renderer.AI_NOTICE, ''))
         self.assertEqual(blocks[2][1], '1.')
         self.assertEqual(renderer.parse_summary(summary(notice=False))[1][0], 'item')
 
     def test_notice_is_only_allowed_once_after_first_heading(self):
         text = summary()
-        for invalid in [text.replace(renderer.AI_NOTICE, renderer.AI_NOTICE + '\n' + renderer.AI_NOTICE),
-                        text.replace(renderer.AI_NOTICE + '\n\n', '') + renderer.AI_NOTICE,
-                        text.replace(renderer.AI_NOTICE + '\n\n', '').replace('\n\n# ', '\n\n' + renderer.AI_NOTICE + '\n\n# ', 1),
+        notice = f'*{renderer.AI_NOTICE}*'
+        for invalid in [text.replace(notice, notice + '\n' + notice),
+                        text.replace(notice + '\n\n', '') + notice,
+                        text.replace(notice + '\n\n', '').replace('\n\n# ', '\n\n' + notice + '\n\n# ', 1),
                         text.replace('1. **Síť** - Příliš žluťoučký kůň úpěl ďábelské ódy. A & B.', '')]:
             with self.subTest(text=invalid), self.assertRaises(ValueError):
                 renderer.parse_summary(invalid)
+
+    def test_legacy_plain_notice_remains_supported(self):
+        for notice in (renderer.LEGACY_AI_NOTICE, renderer.AI_NOTICE):
+            blocks = renderer.parse_summary(summary().replace(f'*{renderer.AI_NOTICE}*', notice))
+            self.assertEqual(blocks[1], ('plain', '', notice, ''))
+
+    def test_pdf_notice_uses_italic_font(self):
+        from pypdf import PdfReader
+        with tempfile.TemporaryDirectory() as directory:
+            pdf = Path(directory) / 'notice.pdf'
+            blocks = renderer.parse_summary(summary())
+            renderer.render(blocks, pdf)
+            italic = []
+            def visit(text, cm, tm, font, size):
+                if font and 'DejaVuSans-Oblique' in font.get('/BaseFont', ''):
+                    italic.append(text)
+            for page in PdfReader(pdf).pages:
+                page.extract_text(visitor_text=visit)
+            self.assertEqual(''.join(''.join(italic).split()), ''.join(renderer.AI_NOTICE.split()))
 
     def test_rejects_unsupported_markup(self):
         for markup in ['`kód`', '*kurzíva*', '**tučně**', '[odkaz](https://example.com)', '<b>HTML</b>', '$x$', 'a | b', r'\LaTeX', 'x_y']:

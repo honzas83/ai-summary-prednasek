@@ -40,9 +40,9 @@ Neuváděj domněnky jako fakta. Nejasný název raději ověř v aktuálních s
 
 ## Jednotný Markdown a PDF
 
-Markdown používá pouze tři předepsané nadpisy `#`, jednoúrovňové číslované seznamy, odrážky `-` a tučný název na začátku položky. Každá položka je jeden zdrojový řádek ve tvaru `1. **Název** - Text` nebo `- **Pojem** - Definice`. Mezi položkami vlož prázdný řádek. Číslování začíná v každé sekci od 1. Hned pod první nadpis vlož předepsané upozornění na AI jako samostatný prostý odstavec, oddělený prázdnými řádky. Jeho přesné znění a výjimku pro přednášku bez doplnění uvádí [specifikace výstupu](references/specifikace-vystupu.md).
+Markdown používá pouze tři předepsané nadpisy `#`, jednoúrovňové číslované seznamy, odrážky `-` a tučný název na začátku položky. Každá položka je jeden zdrojový řádek ve tvaru `1. **Název** - Text` nebo `- **Pojem** - Definice`. Mezi položkami vlož prázdný řádek. Číslování začíná v každé sekci od 1. Hned pod první nadpis vlož předepsané upozornění na AI jako samostatný odstavec celý kurzívou, uzavřený do jedné dvojice hvězdiček, oddělený prázdnými řádky. Jeho přesné znění a výjimku pro přednášku bez doplnění uvádí [specifikace výstupu](references/specifikace-vystupu.md).
 
-Nepoužívej tabulky, vnořené seznamy, další nadpisy, kurzívu, další tučné úseky, kódové bloky ani inline kód, matematickou sazbu, obrázky, HTML, LaTeX, frontmatter či Markdown odkazy. Příkazy a vzorce vysvětli prostým textem; důležitou adresu napiš jako prostou URL. Neměň obsah kvůli sazbě.
+Nepoužívej tabulky, vnořené seznamy, další nadpisy, kurzívu mimo předepsané upozornění, další tučné úseky, kódové bloky ani inline kód, matematickou sazbu, obrázky, HTML, LaTeX, frontmatter či Markdown odkazy. Příkazy a vzorce vysvětli prostým textem; důležitou adresu napiš jako prostou URL. Neměň obsah kvůli sazbě.
 
 PDF vždy vytvoř skriptem [scripts/render_summary.py](scripts/render_summary.py). Použij Python z aktuálního runtime zjištěný nástrojem `load_workspace_dependencies`; nevkládej do instrukcí ani příkazů cestu k jedné konkrétní verzi runtime. Skript potřebuje pouze přibalené knihovny ReportLab a pypdf. Fonty jsou součástí skillu.
 
@@ -56,7 +56,7 @@ Renderer odmítá nepodporovaný Markdown a existující cílový soubor, ověř
 
 ## Volitelný DOCX
 
-DOCX vytvářej pouze na výslovné vyžádání uživatele, navíc k Markdownu a PDF. Načti skill `$documents` a dodrž jeho postup vytvoření a vizuálního ověření DOCX. Z hotového Markdownu převezmi obsah přes `parse_summary` z přibaleného `scripts/render_summary.py`; parser ani syntézu neopakuj. Pomocí `python-docx` z aktuálního runtime převeď bloky na skutečné nadpisy první úrovně, prosté odstavce a seznamy s tučným názvem položky. Číslování obou číslovaných seznamů musí začínat od 1. Upozornění musí zůstat hned za prvním nadpisem.
+DOCX vytvářej pouze na výslovné vyžádání uživatele, navíc k Markdownu a PDF. Načti skill `$documents` a dodrž jeho postup vytvoření a vizuálního ověření DOCX. Z hotového Markdownu převezmi obsah přes `parse_summary` z přibaleného `scripts/render_summary.py`; parser ani syntézu neopakuj. Pomocí `python-docx` z aktuálního runtime převeď bloky na skutečné nadpisy první úrovně, prosté odstavce a seznamy s tučným názvem položky. Číslování obou číslovaných seznamů musí začínat od 1. Blok `notice` převeď na odstavec celý kurzívou; upozornění musí zůstat hned za prvním nadpisem.
 
 Zachovej tři sekce, pořadí a celý text beze změn; nepřidávej titulní stranu, úvod ani obsah. Základní vzhled převezmi z `assets/pdf-style.json` (A4, okraje, písmo, velikosti a černý text); zalomení stran se může od PDF lišit. Ulož nejprve do nového dočasného `.docx`, znovu jej otevři a porovnej text i pořadí všech bloků s Markdownem. Před předáním vykresli DOCX podle `$documents` a vizuálně zkontroluj všechny strany. Výsledkem je `<název-prezentace>.summary.docx` vedle potvrzeného PDF slajdů. Pokud vytvoření nebo kontrola DOCX selže, zachovej ověřený Markdown a PDF a oznam konkrétní překážku; DOCX nevydávej za hotový.
 
@@ -67,7 +67,7 @@ Vytvoř jediný Markdown přesně podle specifikace a z něj odvoď PDF. PDF ani
 Před předáním ověř:
 
 - přesné názvy, pořadí a jediný výskyt všech tří sekcí;
-- předepsané upozornění hned za prvním nadpisem ve všech požadovaných formátech;
+- předepsané upozornění celé kurzívou hned za prvním nadpisem ve všech požadovaných formátech;
 - chronologické řazení prvních dvou číslovaných seznamů;
 - abecední řazení slovníčku bez zjevných duplicit;
 - že část „Co nenajdete v prezentaci“ neparafrázuje body, které už slajdy obsahují;

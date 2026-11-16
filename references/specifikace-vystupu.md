@@ -7,14 +7,14 @@ Výstup je čistý český Markdown v UTF-8 bez YAML frontmatteru, titulní stra
 ```markdown
 # Shrnutí hlavních bodů
 
-Upozornění: Toto shrnutí bylo vytvořeno s podporou umělé inteligence na základě slajdů a výkladu vyučujícího. Může obsahovat chyby nebo nepřesnosti. Bez doprovodných slajdů mohou být některé části nejasné nebo zavádějící.
+*Upozornění: Tento dokument byl vytvořen s podporou umělé inteligence na základě slajdů a výkladu vyučujícího. Může obsahovat chyby nebo nepřesnosti. Bez doprovodných slajdů mohou být některé části nejasné nebo zavádějící.*
 
 1. **Název tématu** - Souvislé a věcně úplné vysvětlení tématu pro studenty.
 
 2. **Další téma** - Vysvětlení v pořadí, v jakém zaznělo na přednášce.
 ```
 
-- Hned za první nadpis vlož přesné upozornění z ukázky jako jeden prostý odstavec. Uveď je právě jednou, před první položkou seznamu.
+- Hned za první nadpis vlož přesné upozornění z ukázky jako jeden odstavec celý kurzívou, uzavřený do jedné dvojice hvězdiček podle ukázky. Uveď je právě jednou, před první položkou seznamu.
 - Použij číslovaný seznam.
 - Zahrň všechna podstatná témata aktuálního výkladu, ne každou odbočku nebo výplňovou větu.
 - Každý bod začíná krátkým tučně formátovaným pojmem nebo názvem tématu.
@@ -65,8 +65,8 @@ Upozornění: Toto shrnutí bylo vytvořeno s podporou umělé inteligence na z�
 - První dvě sekce používají jednoúrovňové číslované seznamy od 1, třetí odrážky `-`.
 - Každá položka zabírá jeden zdrojový řádek a má přesný tvar `1. **Název** - Text` nebo `- **Pojem** - Definice`. Vysvětlení je prostý text, bez dalšího formátování.
 - Mezi položkami a za nadpisy je prázdný řádek. Výjimkami ze seznamového obsahu jsou předepsané upozornění za prvním nadpisem a prostá věta pro sekci bez doplnění. Oba odstavce odděl prázdnými řádky.
-- Nepoužívej další nadpisy, tabulky, vnořené seznamy, kurzívu, další tučné úseky, inline kód, kódové bloky, obrázky, HTML, LaTeX, matematickou sazbu, frontmatter ani Markdown odkazy. Důležité URL mohou být prostým textem.
-- Rezervované znaky pro nepovolené formátování (`*`, `_`, zpětný apostrof, `$`, `<`, `>`, `|` a zpětné lomítko) nepiš do názvů ani vysvětlení. Hvězdičky jsou povolené pouze ve vyznačení úvodního tučného názvu. Například příkaz iptables -L piš prostě a nerovnost vyjádři slovně.
+- Nepoužívej další nadpisy, tabulky, vnořené seznamy, kurzívu mimo předepsané upozornění, další tučné úseky, inline kód, kódové bloky, obrázky, HTML, LaTeX, matematickou sazbu, frontmatter ani Markdown odkazy. Důležité URL mohou být prostým textem.
+- Rezervované znaky pro nepovolené formátování (`*`, `_`, zpětný apostrof, `$`, `<`, `>`, `|` a zpětné lomítko) nepiš do názvů ani vysvětlení. Hvězdičky jsou povolené pouze ve vyznačení úvodního tučného názvu a kurzívy celého předepsaného upozornění. Například příkaz iptables -L piš prostě a nerovnost vyjádři slovně.
 
 ## PDF
 
@@ -76,4 +76,4 @@ Skript ověřuje formát vstupu, čitelnost PDF a přítomnost textu ve správn�
 
 ## Volitelný DOCX
 
-Pouze na výslovné vyžádání vzniká navíc `<název-prezentace>.summary.docx`. Obsahově se shoduje s Markdownem a PDF včetně upozornění hned za prvním nadpisem. Zachovej skutečné styly nadpisů, seznamy a tučné názvy; číslování každé sekce začíná od 1. Použij stejný základní vzhled jako v PDF, bez požadavku na shodné zalomení stran. Postup vytvoření a povinné kontroly uvádí část „Volitelný DOCX“ v `SKILL.md`.
+Pouze na výslovné vyžádání vzniká navíc `<název-prezentace>.summary.docx`. Obsahově se shoduje s Markdownem a PDF včetně celého upozornění kurzívou hned za prvním nadpisem. Zachovej skutečné styly nadpisů, seznamy a tučné názvy; číslování každé sekce začíná od 1. Použij stejný základní vzhled jako v PDF, bez požadavku na shodné zalomení stran. Postup vytvoření a povinné kontroly uvádí část „Volitelný DOCX“ v `SKILL.md`.
